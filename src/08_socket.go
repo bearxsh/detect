@@ -24,7 +24,8 @@ func init() {
 	})
 }
 
-func handleConn(conn net.Conn) {
+//handleConn
+func handleConn1(conn net.Conn) {
 
 	defer func(conn net.Conn) {
 		log.Info("close conn...")
@@ -79,6 +80,6 @@ func main() {
 			break
 		}
 		log.Infof("remote connect success: %s", accept.RemoteAddr())
-		go handleConn(accept)
+		go handleConn1(accept)
 	}
 }

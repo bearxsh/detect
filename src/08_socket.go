@@ -14,7 +14,7 @@ func init() {
 	log.SetReportCaller(true)
 	log.SetFormatter(&log.TextFormatter{
 		// 注意：2006-01-02 15:04:05是固定的，不能改动！
-		TimestampFormat: "2006-01-02 15:04:05",
+		TimestampFormat: "2006-01-02 15:04:05.000",
 		FullTimestamp:   true,
 		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
 			// 精简文件名
@@ -58,16 +58,16 @@ func handleConn1(conn net.Conn) {
 		log.Infof("read %d bytes, content is %s\n", n, string(buf[:n]))
 		// TODO 处理业务逻辑
 		// 发送
-		_, err = conn.Write(buf[:n])
+	/*	_, err = conn.Write(buf[:n])
 		if err != nil {
 			log.Errorf("write err: %s", err)
 			return
-		}
+		}*/
 
 	}
 }
 func main() {
-	listen, err := net.Listen("tcp", ":8889")
+	listen, err := net.Listen("tcp", ":9999")
 	if err != nil {
 		log.Errorf("listen error: %s", err)
 		return

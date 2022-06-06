@@ -1,1 +1,2 @@
-{"id":"1234567","action":"create","type":"ping","param":"www.baidu.com","interval":3}
+{"id":"1234568","action":"create","type":"ping","param":"www.huxiu.com","interval":3}
+{"id":"1234567","action":"stop"}

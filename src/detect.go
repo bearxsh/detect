@@ -44,7 +44,7 @@ type Response struct {
 
 var db *gorm.DB
 
-// 避免频繁查询数据库
+// 缓存 避免频繁查询数据库
 var taskChannelMap sync.Map
 
 func init() {

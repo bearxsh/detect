@@ -1,2 +1,5 @@
-{"id":"1234568","action":"create","type":"ping","param":"www.huxiu.com","interval":3}
-{"id":"1234567","action":"stop"}
+{"taskId":"115","name":"检测任务2","action":"update","type":"httping","param":"https://www.google.com","interval":10,"description":"这是一条描述","reportAddr":"localhost:9999"}
+{"taskId":"113","action":"stop"}
+{"taskId":"114","action":"start"}
+{"taskId":"112","name":"检测任务1","action":"update","type":"ping","param":"baidu.com","interval":3,"description":"这是一条描述,dd","reportAddr":"localhost:9999"}
+{"taskId":"110","action":"delete"}

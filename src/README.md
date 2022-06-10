@@ -1,4 +1,4 @@
-### 编译步骤
+### 编译
 #### 第一次
 > cd detector
 > 
@@ -8,4 +8,6 @@
 > 
 > go build main.go
 #### 之后直接执行 go build main.go 命令就行了
-注意：Go版本 >= 1.16
+注意：Go version >= 1.16
+### 运行
+> nohup ./main > detector.log 2>&1 &

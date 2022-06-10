@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"net"
+	"os"
 	"os/exec"
 	"path"
 	"runtime"
@@ -42,12 +44,20 @@ type Response struct {
 	Msg  string `json:"msg"`
 }
 
-var db *gorm.DB
-
-// 缓存 避免频繁查询数据库
-var taskChannelMap sync.Map
+var (
+	db *gorm.DB
+	// 缓存 避免频繁查询数据库
+	taskChannelMap sync.Map
+	help           bool
+	bindPort       int
+)
 
 func init() {
+	// 初始化命令行解析
+	flag.BoolVar(&help, "h", false, "查看帮助")
+	flag.IntVar(&bindPort, "p", 8889, "设置启动端口")
+
+	flag.Parse()
 	// 初始化日志
 	log.SetReportCaller(true)
 	log.SetFormatter(&log.TextFormatter{
@@ -63,7 +73,7 @@ func init() {
 	// 初始化数据库
 	var err error
 	db, err = gorm.Open(sqlite.Open("detector.db"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
 		panic(err)
@@ -122,6 +132,15 @@ func doHttping(param string) string {
 		}
 	}
 	return latency
+}
+func doTcp(param string) string {
+	conn, err := net.DialTimeout("tcp", param, 2*time.Second)
+	if err != nil {
+		log.Errorf("Failed to establish connection with [%s]: %s", param, err)
+		return "false"
+	}
+	conn.Close()
+	return "true"
 }
 
 func doPing(param string) string {
@@ -301,7 +320,7 @@ func detect(task *DetectTask) {
 		} else if task.Type == "netupdown" {
 			rs = doNetUpDown(task.Param)
 		} else if task.Type == "tcpudp" {
-
+			rs = doTcp(task.Param)
 		} else {
 			log.Errorf("The task [%s], unknown type [%s]", task.TaskId, task.Type)
 			continue
@@ -331,17 +350,21 @@ func loadTaskOnStart() {
 		go detect(&tasks[i])
 	}
 }
-
-// TODO 通过命令行参数指定运行端口
+func handleCommand() {
+	if help {
+		flag.Usage()
+		os.Exit(0)
+	}
+}
 func main() {
+	handleCommand()
 	loadTaskOnStart()
 	// 启动网络服务
-	port := 8889
-	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", bindPort))
 	if err != nil {
 		panic(err)
 	}
-	log.Infof("The server starts successfully, listening on port [%d].", port)
+	log.Infof("The server starts successfully, listening on port [%d].", bindPort)
 	for {
 		accept, err := listen.Accept()
 		if err != nil {

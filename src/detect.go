@@ -207,8 +207,9 @@ LOOP:
 		case "stop":
 			{
 				db.Model(&DetectTask{}).Where("task_id=?", task.TaskId).Update("status", 0)
-				value, exist := taskChannelMap.LoadAndDelete(task.TaskId)
+				value, exist := taskChannelMap.Load(task.TaskId)
 				if exist {
+					taskChannelMap.Delete(task.TaskId)
 					ch, _ := value.(chan struct{})
 					ch <- struct{}{}
 				} else {
@@ -246,8 +247,9 @@ LOOP:
 					break LOOP
 				}
 				if dt.Status == 1 {
-					value, exist := taskChannelMap.LoadAndDelete(task.TaskId)
+					value, exist := taskChannelMap.Load(task.TaskId)
 					if exist {
+						taskChannelMap.Delete(task.TaskId)
 						ch, _ := value.(chan struct{})
 						ch <- struct{}{}
 					} else {
@@ -268,8 +270,9 @@ LOOP:
 					break LOOP
 				}
 				if dt.Status == 1 {
-					value, exist := taskChannelMap.LoadAndDelete(task.TaskId)
+					value, exist := taskChannelMap.Load(task.TaskId)
 					if exist {
+						taskChannelMap.Delete(task.TaskId)
 						ch, _ := value.(chan struct{})
 						ch <- struct{}{}
 					} else {

@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gin-gonic/gin v1.8.0
 	github.com/mattn/go-sqlite3 v1.14.13
+	github.com/prometheus/procfs v0.7.3
 	github.com/sirupsen/logrus v1.8.1
 	gorm.io/driver/sqlite v1.3.2
 	gorm.io/gorm v1.23.5

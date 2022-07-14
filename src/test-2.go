@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"runtime"
+	"github.com/prometheus/procfs"
 )
 
 func main()  {
-	goos := runtime.GOOS
-	fmt.Println(goos)
-	goarch := runtime.GOARCH
-	fmt.Println(goarch)
-
+	fs, err := procfs.NewFS("/proc")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(fs.CPUInfo())
 }
